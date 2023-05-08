@@ -2,12 +2,17 @@
 pragma solidity ^0.8.0;
 
 contract Coinflip {
+    address private owner;
     struct Commitment {
         uint256 entropy;
         uint256 blockNumber;
     }
     mapping(address => Commitment) public commitments;
     event Game(bool _win, address _player, uint256 _reward);
+
+    constructor() {
+        owner = msg.sender;
+    }
 
     receive() external payable {}
 
@@ -28,7 +33,6 @@ contract Coinflip {
         // reset commitment
         commitments[msg.sender].blockNumber = 0;
         commitments[msg.sender].entropy = 0;
-        // set random number
         uint256 randomNumber = uint256(
             keccak256(abi.encodePacked(block.timestamp, entropy))
         );
@@ -48,5 +52,15 @@ contract Coinflip {
         // lose
         emit Game(false, msg.sender, 0);
         return false;
+    }
+
+    function setOwner(address _owner) public {
+        require(msg.sender == owner, "Only owner can set");
+        owner = _owner;
+    }
+
+    function withdraw(uint256 _value) public {
+        require(msg.sender == owner, "Only owner can withdraw");
+        payable(owner).transfer(_value);
     }
 }
