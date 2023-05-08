@@ -6,7 +6,7 @@ contract Coinflip {
         uint256 entropy;
         uint256 blockNumber;
     }
-    mapping(address => Commitment) commitments;
+    mapping(address => Commitment) public commitments;
     event Game(bool _win, address _player, uint256 _reward);
 
     receive() external payable {}

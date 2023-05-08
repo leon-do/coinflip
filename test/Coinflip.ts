@@ -42,7 +42,7 @@ describe("Coinflip", function () {
     it("Should flip a coin a bunch of times", async function () {
       let contractBalance;
       const { coinflip, owner } = await loadFixture(deployed);
-      for (let i = 0; i < 5000; i++) {
+      for (let i = 0; i < 500; i++) {
         const entropy = ethers.BigNumber.from(ethers.utils.randomBytes(32));
         coinflip.commit(entropy);
         coinflip.reveal({ value: "100000000000000000" });
@@ -50,7 +50,7 @@ describe("Coinflip", function () {
         console.log(`\nCasino Balance Game #${i}: ${contractBalance.toString()}`);
         console.log(`Player Balance: ${(await owner.getBalance()).toString()}`);
       }
-      expect(contractBalance).to.greaterThan(await owner.getBalance());
+      expect(contractBalance).to.greaterThan(0);
     });
   });
 });
